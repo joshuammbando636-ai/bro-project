@@ -1,0 +1,152 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* ==========================================================================
+   DESIGN TOKENS — every colour, font and radius lives here.
+   // TODO: swap in real brand
+   Change these values (and the font in app/layout.tsx) and the whole site follows.
+   ========================================================================== */
+:root {
+  /* One primary colour */
+  --brand: #0e6b5b; /* TODO: swap in real brand */
+  --brand-contrast: #ffffff;
+  /* One dark neutral */
+  --ink: #12201d; /* TODO: swap in real brand */
+  /* One light background (+ white surface for cards) */
+  --paper: #faf8f4; /* TODO: swap in real brand */
+  --surface: #ffffff;
+  /* WhatsApp's own colour, darkened to keep 4.5:1 contrast with white */
+  --whatsapp: #128c4a;
+
+  /* Derived — no need to touch these */
+  --muted: color-mix(in oklab, var(--ink) 68%, var(--paper));
+  --line: color-mix(in oklab, var(--ink) 12%, var(--paper));
+  --brand-soft: color-mix(in oklab, var(--brand) 9%, var(--paper));
+  --brand-strong: color-mix(in oklab, var(--brand) 80%, black);
+
+  --radius: 1rem;
+  --space-section: clamp(4rem, 9vw, 8.5rem);
+  --ease-signature: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-contrast: var(--brand-contrast);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-strong: var(--brand-strong);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-whatsapp: var(--whatsapp);
+  --font-sans: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+  --radius-card: var(--radius);
+}
+
+/* ---------- Base ---------- */
+html {
+  background: var(--paper);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection {
+  background: var(--brand);
+  color: var(--brand-contrast);
+}
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.on-dark :focus-visible {
+  outline-color: #fff;
+}
+
+/* ---------- Type scale (big jumps, fluid) ---------- */
+@layer components {
+  .display {
+    font-size: clamp(2.6rem, 1.3rem + 6vw, 5.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    text-wrap: balance;
+  }
+  .h2 {
+    font-size: clamp(2rem, 1.35rem + 2.9vw, 3.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+    text-wrap: balance;
+  }
+  .h3 {
+    font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    font-weight: 700;
+  }
+  .lead {
+    font-size: clamp(1.05rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  .eyebrow {
+    font-size: 0.8125rem;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brand);
+  }
+  .section {
+    padding-block: var(--space-section);
+  }
+  .link {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.25em;
+    text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
+    transition: text-decoration-color 0.2s ease;
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* ---------- Reduced motion: kill all decorative movement ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Floating WhatsApp button: soft ring pulse (transform + opacity only) */
+@keyframes ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70%,
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+.animate-ring {
+  animation: ring 2.6s var(--ease-signature) infinite;
+}
