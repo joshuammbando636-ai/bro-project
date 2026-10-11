@@ -1,5 +1,4 @@
 import type { SVGProps } from "react";
-import type { ServiceIcon } from "@/config/site";
 
 type P = SVGProps<SVGSVGElement>;
 
@@ -23,6 +22,19 @@ export const WhatsAppIcon = (p: P) => (
   </svg>
 );
 
+export const InstagramIcon = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="3" y="3" width="18" height="18" rx="5" />
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
+  </svg>
+);
+
+export const ArrowUp = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M12 19V5M6 11l6-6 6 6" />
+  </svg>
+);
 export const ArrowRight = (p: P) => (
   <svg {...base(p)}>
     <path d="M5 12h14M13 6l6 6-6 6" />
@@ -92,40 +104,3 @@ export const Feather = (p: P) => (
     <path d="M20 4c-7 0-12 4-13 11l-2 5m2-5h6m1-6c-1 2-2 3-4 4M20 4c0 6-3 10-8 11" />
   </svg>
 );
-
-/* Service icons */
-export const ResearchIcon = (p: P) => (
-  <svg {...base(p)}>
-    <path d="M6 3h9l4 4v14H6z" />
-    <path d="M14 3v5h5M9 13h7M9 17h5" />
-  </svg>
-);
-export const CvIcon = (p: P) => (
-  <svg {...base(p)}>
-    <rect x="4" y="3" width="16" height="18" rx="2" />
-    <circle cx="10" cy="9.5" r="2" />
-    <path d="M6.8 16c.5-1.8 1.8-2.6 3.2-2.6s2.7.8 3.2 2.6M15 8h2M15 11h2" />
-  </svg>
-);
-export const ProposalIcon = (p: P) => (
-  <svg {...base(p)}>
-    <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z" />
-  </svg>
-);
-export const PlanIcon = (p: P) => (
-  <svg {...base(p)}>
-    <path d="M4 20V4M4 20h16" />
-    <path d="M8 16v-4M12 16V8M16 16v-6" />
-  </svg>
-);
-
-const serviceIcons: Record<ServiceIcon, (p: P) => React.JSX.Element> = {
-  research: ResearchIcon,
-  cv: CvIcon,
-  proposal: ProposalIcon,
-  plan: PlanIcon,
-};
-export function ServiceGlyph({ name, ...p }: { name: ServiceIcon } & P) {
-  const I = serviceIcons[name];
-  return <I {...p} />;
-}

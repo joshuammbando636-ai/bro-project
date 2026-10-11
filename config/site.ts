@@ -1,9 +1,8 @@
 /**
  * SITE CONFIG — the single source of truth.
  *
- * Everything marked PLACEHOLDER is invented copy so the site reads like a real
- * product while content is being finalised. Search the repo for "PLACEHOLDER"
- * and "TODO" before launch.
+ * Contact details below are real. Anything still marked PLACEHOLDER or TODO is
+ * unfinished: search the repo for both before launch.
  */
 
 export type ServiceSlug =
@@ -12,31 +11,18 @@ export type ServiceSlug =
   | "proposals"
   | "business-plans";
 
-export type ServiceIcon = "research" | "cv" | "proposal" | "plan";
-
 export interface Service {
   slug: ServiceSlug;
-  icon: ServiceIcon;
+  /** Card image in /public. TODO: swap the placeholders for final photos. */
+  image: string;
   title: string;
   /** One-liner used on cards and the home strip */
   short: string;
   description: string;
   includes: string[];
   turnaround: string;
-  /** PLACEHOLDER pricing — shown as "From …" */
-  from: string;
   /** Who it is for, used in the WhatsApp prefill */
   audience: string;
-}
-
-export interface Sample {
-  id: string;
-  service: ServiceSlug;
-  title: string;
-  blurb: string;
-  meta: string;
-  // TODO: add `image: "/samples/xyz.jpg"` once real (redacted) samples exist.
-  // Until then the UI renders a designed document preview.
 }
 
 export interface Faq {
@@ -55,21 +41,18 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com",
 
   contact: {
-    // TODO: real WhatsApp number — digits only, country code first, no "+"
-    whatsappNumber: "255700000000",
-    whatsappDisplay: "+255 700 000 000",
-    // TODO: real email
-    email: "hello@example.com",
-    phone: "+255 700 000 000",
+    // Same number for calls and WhatsApp. whatsappNumber: digits only, country code first, no "+"
+    whatsappNumber: "255777561651",
+    whatsappDisplay: "+255 777 561 651",
+    phone: "+255 777 561 651",
+    phoneHref: "tel:+255777561651",
+    email: "joshua050mmbando@gmail.com",
+    // TODO: full Instagram profile URL, e.g. "https://instagram.com/kalamuwriters". Icons hide while empty.
+    instagram: "",
     location: {
       city: "Dar es Salaam",
       country: "Tanzania",
-      // TODO: real address / or remove the street line
-      address: "Sample Street, Mikocheni, Dar es Salaam",
-      hours: "Mon–Sat, 8:00–18:00 (EAT)",
-      // TODO: real coordinates for the map embed
-      lat: -6.8155,
-      lng: 39.2883,
+      // TODO: add street address and opening hours once confirmed (not shown until then)
     },
   },
 
@@ -87,16 +70,13 @@ export const siteConfig = {
   nav: [
     { label: "Home", href: "/" },
     { label: "Services", href: "/services" },
-    { label: "Samples", href: "/gallery" },
-    { label: "About", href: "/about" },
-    { label: "FAQ", href: "/faq" },
     { label: "Contact", href: "/contact" },
   ],
 
   services: [
     {
       slug: "research-papers",
-      icon: "research",
+      image: "/images/img-03.webp",
       title: "Research papers",
       short: "Term papers, dissertations and journal-ready articles with clean referencing.",
       description:
@@ -108,12 +88,11 @@ export const siteConfig = {
         "Plagiarism report on request",
       ],
       turnaround: "3–10 days depending on length",
-      from: "TZS 60,000",
       audience: "a research paper",
     },
     {
       slug: "cvs",
-      icon: "cv",
+      image: "/images/img-02.webp",
       title: "CVs & cover letters",
       short: "A sharp, honest CV that gets you shortlisted for jobs, scholarships and NGOs.",
       description:
@@ -125,12 +104,11 @@ export const siteConfig = {
         "LinkedIn headline & summary tips",
       ],
       turnaround: "24–48 hours",
-      from: "TZS 15,000",
       audience: "a CV / cover letter",
     },
     {
       slug: "proposals",
-      icon: "proposal",
+      image: "/images/img-05.webp",
       title: "Proposals",
       short: "Grant, project and research proposals structured the way funders read them.",
       description:
@@ -142,12 +120,11 @@ export const siteConfig = {
         "Two rounds of revisions",
       ],
       turnaround: "3–7 days",
-      from: "TZS 50,000",
       audience: "a proposal",
     },
     {
       slug: "business-plans",
-      icon: "plan",
+      image: "/images/img-04.webp",
       title: "Business plans",
       short: "Bank-ready and investor-ready plans with realistic numbers in TZS.",
       description:
@@ -159,7 +136,6 @@ export const siteConfig = {
         "Executive summary and pitch outline",
       ],
       turnaround: "5–10 days",
-      from: "TZS 120,000",
       audience: "a business plan",
     },
   ] satisfies Service[],
@@ -168,11 +144,11 @@ export const siteConfig = {
   process: [
     {
       title: "Tell us what you need",
-      body: "Message us on WhatsApp or fill in the form. Share the topic, length, deadline and any guidelines you were given.",
+      body: "Call us, message us on WhatsApp or fill in the form. Share the topic, length, deadline and any guidelines you were given.",
     },
     {
       title: "Get a clear quote",
-      body: "We reply within the hour during working days with a fixed price and delivery date. No hidden fees.",
+      body: "We give you a fixed price and a delivery date. No hidden fees.",
     },
     {
       title: "Pay a deposit",
@@ -188,105 +164,15 @@ export const siteConfig = {
     },
   ],
 
-  // PLACEHOLDER — invented numbers. Replace with real ones or remove.
-  stats: [
-    { value: "500+", label: "Documents delivered" },
-    { value: "48h", label: "Typical CV turnaround" },
-    { value: "2", label: "Free revision rounds" },
-    { value: "1h", label: "Average first reply" },
-  ],
-
-  // PLACEHOLDER — fictional testimonials. Replace with real, permissioned ones.
-  testimonials: [
-    {
-      quote:
-        "I sent my old CV on Monday and had a new one by Tuesday evening. I was shortlisted for two interviews the following week.",
-      name: "Neema M.",
-      role: "Graduate, Dar es Salaam",
-    },
-    {
-      quote:
-        "They turned my rough idea into a proposal that a funder actually understood. The budget narrative alone saved me days.",
-      name: "Juma K.",
-      role: "Founder, agri-business, Morogoro",
-    },
-    {
-      quote:
-        "Clear communication, fair price and paid with Tigo Pesa. The business plan helped me get my SACCO loan approved.",
-      name: "Asha R.",
-      role: "Small business owner, Arusha",
-    },
-  ],
-
-  // PLACEHOLDER — sample works. Titles and descriptions are invented.
-  samples: [
-    {
-      id: "s1",
-      service: "research-papers",
-      title: "Mobile money and household savings",
-      blurb: "A 6,000-word paper on how mobile money use changes saving habits in urban Tanzania.",
-      meta: "Research paper · 24 pages · APA 7",
-    },
-    {
-      id: "s2",
-      service: "cvs",
-      title: "Graduate CV, public health",
-      blurb: "A one-page CV that leads with field experience and a clear professional summary.",
-      meta: "CV · 1 page · Word + PDF",
-    },
-    {
-      id: "s3",
-      service: "proposals",
-      title: "Youth skills programme proposal",
-      blurb: "A donor-style proposal with objectives, activities, logframe and a costed work plan.",
-      meta: "Proposal · 18 pages · Logframe included",
-    },
-    {
-      id: "s4",
-      service: "business-plans",
-      title: "Poultry farm business plan",
-      blurb: "A loan-ready plan with a market study, operating costs and 3-year cash flow.",
-      meta: "Business plan · 32 pages · TZS projections",
-    },
-    {
-      id: "s5",
-      service: "research-papers",
-      title: "Solar adoption in rural districts",
-      blurb: "A literature review and mixed-methods write-up on barriers to household solar.",
-      meta: "Research paper · 30 pages · Harvard",
-    },
-    {
-      id: "s6",
-      service: "cvs",
-      title: "Mid-career CV, logistics",
-      blurb: "Two-page CV for a senior role, built around measurable results and certifications.",
-      meta: "CV · 2 pages · Cover letter included",
-    },
-    {
-      id: "s7",
-      service: "proposals",
-      title: "Community water project concept note",
-      blurb: "A tight 3-page concept note written to pass the first screening round.",
-      meta: "Concept note · 3 pages",
-    },
-    {
-      id: "s8",
-      service: "business-plans",
-      title: "Coffee shop business plan",
-      blurb: "Location analysis, menu strategy and a break-even model for a first café.",
-      meta: "Business plan · 26 pages · Pitch outline",
-    },
-  ] satisfies Sample[],
-
   // PLACEHOLDER — write final policy wording before launch
   faqs: [
     {
       q: "How do I place an order?",
-      a: "Tap any Order button to open WhatsApp with a ready message, or use the contact form. Tell us what you need, the deadline and any guidelines, and we'll send a quote.",
+      a: "Call us, tap any Order button to open WhatsApp with a ready message, or use the contact form. Tell us what you need, the deadline and any guidelines, and we'll give you a quote.",
     },
     {
       q: "How much does it cost?",
-      a: "It depends on the type of document, length, deadline and complexity. CVs start from TZS 15,000 and research papers from TZS 60,000. You always get a fixed quote before paying anything.",
+      a: "It depends on the type of document, length, deadline and complexity. Call us with the details and you get a fixed quote before paying anything.",
     },
     {
       q: "How do I pay?",
@@ -318,7 +204,7 @@ export const siteConfig = {
     },
     {
       q: "I'm not in Dar es Salaam. Can you still help?",
-      a: "Absolutely. Everything happens over WhatsApp, email and mobile money, so we work with clients across Tanzania and abroad.",
+      a: "Absolutely. Everything happens over phone, WhatsApp, email and mobile money, so we work with clients across Tanzania and abroad.",
     },
   ] satisfies Faq[],
 };

@@ -3,18 +3,17 @@
 
 /* ==========================================================================
    DESIGN TOKENS — every colour, font and radius lives here.
-   // TODO: swap in real brand
    Change these values (and the font in app/layout.tsx) and the whole site follows.
    ========================================================================== */
 :root {
-  /* One primary colour */
-  --brand: #0e6b5b; /* TODO: swap in real brand */
+  /* Black & white on a bright off-white. Black doubles as the accent. */
+  --brand: #0a0a0a;
   --brand-contrast: #ffffff;
-  /* One dark neutral */
-  --ink: #12201d; /* TODO: swap in real brand */
-  /* One light background (+ white surface for cards) */
-  --paper: #faf8f4; /* TODO: swap in real brand */
-  --surface: #ffffff;
+  --ink: #0a0a0a;
+  --paper: #fafaf8; /* off-white page background */
+  --surface: #ffffff; /* cards */
+  /* Neutral grey for focus rings on dark surfaces */
+  --sage: #8a8a8a;
   /* WhatsApp's own colour, darkened to keep 4.5:1 contrast with white */
   --whatsapp: #128c4a;
 
@@ -40,7 +39,10 @@
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-whatsapp: var(--whatsapp);
+  --color-sage: var(--sage);
   --font-sans: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+  --font-accent: var(--font-serif), ui-serif, Georgia, serif;
   --radius-card: var(--radius);
 }
 
@@ -74,24 +76,26 @@ body {
 /* ---------- Type scale (big jumps, fluid) ---------- */
 @layer components {
   .display {
+    font-family: var(--font-display);
     font-size: clamp(2.6rem, 1.3rem + 6vw, 5.5rem);
-    line-height: 1.02;
+    line-height: 1.04;
     letter-spacing: -0.035em;
-    font-weight: 800;
+    font-weight: 450;
     text-wrap: balance;
   }
   .h2 {
+    font-family: var(--font-display);
     font-size: clamp(2rem, 1.35rem + 2.9vw, 3.5rem);
     line-height: 1.08;
     letter-spacing: -0.03em;
-    font-weight: 800;
+    font-weight: 450;
     text-wrap: balance;
   }
   .h3 {
     font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
     line-height: 1.25;
-    letter-spacing: -0.015em;
-    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-weight: 500;
   }
   .lead {
     font-size: clamp(1.05rem, 1rem + 0.35vw, 1.25rem);
@@ -100,13 +104,12 @@ body {
     max-width: 60ch;
     text-wrap: pretty;
   }
+  /* Quiet grey label above headings ("Our Focus" style) */
   .eyebrow {
-    font-size: 0.8125rem;
-    line-height: 1;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--brand);
+    font-size: 1rem;
+    line-height: 1.2;
+    font-weight: 400;
+    color: var(--muted);
   }
   .section {
     padding-block: var(--space-section);
@@ -123,6 +126,26 @@ body {
   }
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------- Menu: hovering one link blurs its siblings in the same group ---------- */
+.nav-group a {
+  transition:
+    filter 0.35s var(--ease-signature),
+    opacity 0.35s var(--ease-signature);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-group:has(a:hover) a:not(:hover) {
+    filter: blur(4px);
+    opacity: 0.5;
+  }
+}
+
 /* ---------- Reduced motion: kill all decorative movement ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -133,20 +156,4 @@ body {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* Floating WhatsApp button: soft ring pulse (transform + opacity only) */
-@keyframes ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.45;
-  }
-  70%,
-  100% {
-    transform: scale(1.7);
-    opacity: 0;
-  }
-}
-.animate-ring {
-  animation: ring 2.6s var(--ease-signature) infinite;
 }

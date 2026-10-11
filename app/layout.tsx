@@ -1,17 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Instrument_Serif, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
 
-// TODO: swap in real brand — one clean sans. Change the import + this call only;
-// the rest of the site reads the --font-brand variable.
-const brandFont = Plus_Jakarta_Sans({
+// One neo-grotesk family for everything. Headlines (font-display) and body text
+// (font-sans) both read --font-brand; see app/globals.css.
+const brandFont = Inter_Tight({
   variable: "--font-brand",
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Serif italic for single accent words in headlines only (font-accent)
+const accentFont = Instrument_Serif({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
   display: "swap",
 });
 
@@ -33,12 +41,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f4", // TODO: swap in real brand (keep in sync with --paper)
+  themeColor: "#fafaf8", // keep in sync with --paper
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${brandFont.variable} h-full`}>
+    <html lang="en" className={`${brandFont.variable} ${accentFont.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <Providers>
           <a
@@ -52,7 +60,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
           <Footer />
-          <FloatingWhatsApp />
         </Providers>
       </body>
     </html>

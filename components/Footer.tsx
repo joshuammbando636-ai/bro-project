@@ -1,75 +1,99 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { Logo } from "./Logo";
 import { Container } from "./Container";
-import { Mail, Phone, Pin } from "./Icons";
+import { BackToTop, FooterNav } from "./FooterParts";
+import { SocialLinks } from "./SocialLinks";
+
+const links = [
+  { label: "Services", href: "/services" },
+  { label: "How it works", href: "/#process" },
+  { label: "Questions", href: "/#faq" },
+  { label: "Contact", href: "/contact" },
+];
+
+const ring = "rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-white";
 
 export function Footer() {
   const { contact } = siteConfig;
+  const services = siteConfig.services.map((s) => ({ label: s.title, href: `/services#${s.slug}` }));
+
   return (
-    <footer className="on-dark border-t border-white/10 bg-ink text-white/80">
-      <Container className="py-14 md:py-16">
-        <div className="grid gap-12 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <div className="text-white">
-              <Logo />
-            </div>
-            <p className="mt-5 max-w-sm text-[0.95rem] text-white/70">
-              {siteConfig.tagline}. Research papers, CVs, proposals and business plans, written with care and delivered on time.
-            </p>
-            <p className="mt-6 text-sm text-white/60">
-              We accept {siteConfig.payments.methods.join(", ")}.
-            </p>
-          </div>
-
-          <nav aria-label="Footer" className="md:col-span-3">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-white/50">Explore</h2>
-            <ul className="space-y-1">
-              {siteConfig.nav.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="inline-flex min-h-9 items-center hover:text-white link">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+    <footer className="on-dark">
+      <div className="bg-[#242424] text-white">
+        <Container className="flex flex-col-reverse gap-12 py-16 md:flex-row md:items-start md:justify-between md:py-24">
+          <nav aria-label="Footer">
+            <FooterNav services={services} links={links} />
           </nav>
+          <Link
+            href="/"
+            aria-label={`${siteConfig.name} — home`}
+            className="shrink-0 rounded-sm text-[clamp(2.5rem,4vw,3.5rem)] font-light leading-none tracking-[-0.04em] outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            {siteConfig.shortName}
+          </Link>
+        </Container>
 
-          <div className="md:col-span-4">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-white/50">Get in touch</h2>
-            <ul className="space-y-3 text-[0.95rem]">
-              <li className="flex gap-3">
-                <Phone width={20} height={20} className="mt-0.5 shrink-0 text-white/50" />
-                <a className="link hover:text-white" href={`tel:${contact.phone.replace(/\s/g, "")}`}>
+        <div className="border-t border-white/10" />
+
+        <Container className="py-12 md:py-16">
+          <SocialLinks variant="text" className="md:justify-end" />
+
+          <div className="mt-12 grid gap-12 sm:grid-cols-2 lg:grid-cols-12">
+            <div className="lg:col-span-3">
+              <p className="text-lg font-medium">{contact.location.city}</p>
+              <p className="mt-4 text-white/85">
+                {contact.location.country}
+                <br />
+                Working with clients across Tanzania and abroad
+              </p>
+              <p className="mt-3">
+                <a href={contact.phoneHref} className={ring}>
                   {contact.phone}
                 </a>
-              </li>
-              <li className="flex gap-3">
-                <Mail width={20} height={20} className="mt-0.5 shrink-0 text-white/50" />
-                <a className="link hover:text-white" href={`mailto:${contact.email}`}>
-                  {contact.email}
-                </a>
-              </li>
-              <li className="flex gap-3">
-                <Pin width={20} height={20} className="mt-0.5 shrink-0 text-white/50" />
-                <span>
-                  {contact.location.city}, {contact.location.country}
-                  <br />
-                  <span className="text-white/60">{contact.location.hours}</span>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+              </p>
+            </div>
 
-        <div className="mt-14 flex flex-col gap-2 border-t border-white/10 pt-6 text-sm text-white/50 sm:flex-row sm:justify-between">
-          <p>
+            <div className="lg:col-span-5">
+              <p className="text-lg font-medium">Delivery times</p>
+              <ul className="mt-4 max-w-sm space-y-2 text-white/85">
+                {siteConfig.services.map((s) => (
+                  <li key={s.slug} className="flex justify-between gap-6">
+                    <Link href={`/services#${s.slug}`} className={`transition-colors hover:text-white ${ring}`}>
+                      {s.title}
+                    </Link>
+                    <span className="shrink-0 text-white/50">{s.turnaround.replace(/ depending.*$/, "")}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="lg:col-span-3 lg:col-start-10">
+              <p className="text-lg font-medium">We write in</p>
+              <p className="mt-4 text-white/85">
+                English
+                <br />
+                Kiswahili
+              </p>
+              <p className="mt-3 text-white/50">Translation between the two on request.</p>
+            </div>
+          </div>
+        </Container>
+
+        <div className="border-t border-white/10" />
+
+        {/* Phase 2 (deferred): Blog / News and Shop links go in FooterNav */}
+        <Container className="grid gap-4 py-8 text-sm sm:grid-cols-3 sm:items-center">
+          <p className="text-white/50">
             © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </p>
-          {/* Phase 2 (deferred): Blog / News and Shop links go here */}
-          <p>Made in Tanzania</p>
-        </div>
-      </Container>
+          <div className="sm:justify-self-center">
+            <BackToTop />
+          </div>
+          <p className="text-white/50 sm:justify-self-end">
+            Made in <span className="text-white">Tanzania</span>
+          </p>
+        </Container>
+      </div>
     </footer>
   );
 }

@@ -42,7 +42,7 @@ export function ProcessSteps() {
       />
       {siteConfig.process.map((step, i) => (
         <li key={step.title} className="relative">
-          <span className="absolute -left-16 top-0 grid size-12 place-items-center rounded-full border-2 border-brand bg-paper text-lg font-extrabold text-brand sm:-left-20 sm:size-14">
+          <span className="absolute -left-16 top-0 grid size-12 place-items-center rounded-full border-2 border-brand bg-paper text-lg font-medium text-brand sm:-left-20 sm:size-14">
             {i + 1}
           </span>
           <Reveal>

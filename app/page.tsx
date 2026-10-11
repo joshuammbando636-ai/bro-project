@@ -1,18 +1,18 @@
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Hero } from "@/components/Hero";
-import { Container, SectionHeading } from "@/components/Container";
+import { Container } from "@/components/Container";
+import { ArrowRight } from "@/components/Icons";
 import { Reveal } from "@/components/Reveal";
-import { ServiceTile } from "@/components/ServiceCard";
-import { DocPreview } from "@/components/DocPreview";
-import { StatsRow, Testimonials } from "@/components/Testimonials";
+import { ServiceFeatureCard, ServiceTextCard } from "@/components/ServiceCard";
+import { ProcessSteps } from "@/components/ProcessSteps";
 import { Accordion } from "@/components/Accordion";
-import { ButtonLink } from "@/components/Button";
-import { CTASection } from "@/components/CTASection";
+
+// TODO: swap for the final FAQ background photo
+const FAQ_IMAGE = "/images/img-01.webp";
 
 export default function HomePage() {
-  const previews = [siteConfig.samples[0], siteConfig.samples[1], siteConfig.samples[2], siteConfig.samples[3]];
-
   return (
     <>
       <Hero />
@@ -20,85 +20,71 @@ export default function HomePage() {
       {/* What we do */}
       <section className="section pt-8 md:pt-12" aria-labelledby="what-we-do">
         <Container>
-          <SectionHeading
-            eyebrow="What we do"
-            title={<span id="what-we-do">Four kinds of writing. One reliable team.</span>}
-            intro="Whether it's a deadline, an interview or a funding call, we help you put your best work forward."
-          />
-          <Reveal stagger className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {siteConfig.services.map((s) => (
-              <ServiceTile key={s.slug} service={s} />
-            ))}
-          </Reveal>
-        </Container>
-      </section>
-
-      {/* Sample works */}
-      <section className="section bg-brand-soft" aria-labelledby="samples">
-        <Container>
-          <SectionHeading
-            eyebrow="Sample works"
-            title={<span id="samples">See the standard before you order.</span>}
-            intro="A few anonymised examples of the structure, clarity and finish you can expect."
-            action={
-              <ButtonLink href="/gallery" variant="secondary" arrow>
-                Browse all samples
-              </ButtonLink>
-            }
-          />
-          <Reveal stagger className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-            {previews.map((s, i) => (
-              <Link key={s.id} href="/gallery" className={`group block ${i % 2 === 1 ? "lg:translate-y-8" : ""}`}>
-                <div className="@container aspect-[4/5] overflow-hidden rounded-card border border-line bg-surface transition-[transform,border-color] duration-300 ease-out group-hover:-translate-y-1 group-hover:border-brand/40">
-                  <DocPreview service={s.service} title={s.title} />
-                </div>
-                <p className="mt-3 text-sm font-semibold leading-snug group-hover:text-brand sm:text-base">{s.title}</p>
+          <Reveal>
+            <h2 className="h2" id="what-we-do">What we do</h2>
+            <div className="mt-10 flex flex-col gap-6 border-b border-line pb-6 lg:flex-row lg:items-center lg:justify-between">
+              <Link href="/services" className="group inline-flex items-center gap-3 text-lg">
+                All services
+                <span className="grid size-9 place-items-center rounded-full bg-line transition-transform duration-300 group-hover:translate-x-1">
+                  <ArrowRight width={16} height={16} />
+                </span>
               </Link>
-            ))}
+              <ul className="flex flex-wrap gap-x-8 gap-y-2 text-lg text-muted">
+                {siteConfig.services.map((s) => (
+                  <li key={s.slug}>
+                    <Link href={`/services#${s.slug}`} className="transition-colors hover:text-ink">
+                      {s.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </Reveal>
-          <div className="h-8 hidden lg:block" />
+          <div className="mt-10 grid gap-5">
+            <Reveal>
+              <ServiceFeatureCard service={siteConfig.services[0]} />
+            </Reveal>
+            <Reveal stagger className="grid gap-5 sm:grid-cols-3">
+              {siteConfig.services.slice(1).map((s) => (
+                <ServiceTextCard key={s.slug} service={s} />
+              ))}
+            </Reveal>
+          </div>
         </Container>
       </section>
 
-      {/* Trust */}
-      <section className="section" aria-labelledby="trust">
-        <Container>
-          <SectionHeading
-            eyebrow="Why people trust us"
-            title={<span id="trust">Clear prices. Honest timelines. Work you can be proud of.</span>}
-          />
-          <div className="mt-12">
-            <StatsRow />
+      {/* How it works */}
+      <section className="section bg-brand-soft" aria-labelledby="process">
+        <Container className="grid gap-12 lg:grid-cols-12">
+          <Reveal className="lg:col-span-4">
+            <p className="eyebrow mb-4">How it works</p>
+            <h2 className="h2" id="process">From first call to final file.</h2>
+            <p className="lead mt-5">Five clear steps. You always know the price and the date before we start.</p>
+          </Reveal>
+          <div className="lg:col-span-7 lg:col-start-6">
+            <ProcessSteps />
           </div>
-          <div className="mt-12">
-            <Testimonials />
-          </div>
-          <p className="mt-6 text-sm text-muted">
-            {/* PLACEHOLDER: fictional testimonials and figures. Replace before launch. */}
-            Client names shortened for privacy.
-          </p>
         </Container>
       </section>
 
-      {/* FAQ teaser */}
-      <section className="section pt-0" aria-labelledby="faq">
+      {/* FAQ */}
+      <section id="faq" className="section relative isolate overflow-hidden" aria-labelledby="faq-title">
+        {/* Soft image backdrop, frosted so the questions stay easy to read */}
+        <div className="absolute inset-0 -z-10" aria-hidden>
+          <Image src={FAQ_IMAGE} alt="" fill sizes="100vw" className="scale-110 object-cover blur-[6px]" />
+          <div className="absolute inset-0 bg-paper/80 backdrop-blur-sm" />
+        </div>
         <Container className="grid gap-10 lg:grid-cols-12">
           <Reveal className="lg:col-span-4">
             <p className="eyebrow mb-4">Questions</p>
-            <h2 className="h2" id="faq">Good to know before you start.</h2>
-            <div className="mt-6">
-              <ButtonLink href="/faq" variant="secondary" arrow>
-                All FAQs
-              </ButtonLink>
-            </div>
+            <h2 className="h2" id="faq-title">Good to know before you call.</h2>
+            <p className="lead mt-5">Can&apos;t find your answer? Call us and ask.</p>
           </Reveal>
           <Reveal className="lg:col-span-8">
-            <Accordion items={siteConfig.faqs.slice(0, 4)} />
+            <Accordion items={siteConfig.faqs} />
           </Reveal>
         </Container>
       </section>
-
-      <CTASection />
     </>
   );
 }

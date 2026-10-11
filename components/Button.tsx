@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { orderProvider } from "@/lib/order";
+import { orderProvider, telUrl } from "@/lib/order";
 import type { ServiceSlug } from "@/config/site";
-import { ArrowRight, WhatsAppIcon } from "./Icons";
+import { siteConfig } from "@/config/site";
+import { ArrowRight, Phone, WhatsAppIcon } from "./Icons";
 
 type Variant = "primary" | "secondary" | "light" | "ghost";
 type Size = "md" | "lg";
@@ -80,6 +81,32 @@ export function OrderButton({
       <WhatsAppIcon width={18} height={18} />
       {label}
       <span className="sr-only"> (opens WhatsApp in a new tab)</span>
+    </a>
+  );
+}
+
+/** Primary contact action: tap-to-call. */
+export function CallButton({
+  label = "Call us",
+  showNumber = false,
+  variant = "primary",
+  size = "md",
+  className,
+}: {
+  label?: string;
+  showNumber?: boolean;
+  variant?: Variant;
+  size?: Size;
+  className?: string;
+}) {
+  return (
+    <a
+      href={telUrl()}
+      className={buttonClasses(variant, size, className)}
+      aria-label={`Call us on ${siteConfig.contact.phone}`}
+    >
+      <Phone width={18} height={18} />
+      {showNumber ? siteConfig.contact.phone : label}
     </a>
   );
 }

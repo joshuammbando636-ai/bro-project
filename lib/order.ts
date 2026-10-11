@@ -28,6 +28,8 @@ export function whatsappUrl(message: string = siteConfig.defaultOrderMessage) {
   return `https://wa.me/${siteConfig.contact.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
+export const telUrl = () => siteConfig.contact.phoneHref;
+
 function orderMessage({ service, note }: OrderRequest) {
   if (!service) return note ? `${siteConfig.defaultOrderMessage}\n\n${note}` : siteConfig.defaultOrderMessage;
   const s = siteConfig.services.find((x) => x.slug === service);

@@ -1,135 +1,143 @@
 "use client";
 
+import { useLayoutEffect, useRef, type MouseEvent, type ReactNode, type RefObject } from "react";
+import { useRouter } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
+import gsap from "gsap";
 import { siteConfig } from "@/config/site";
-import { ButtonLink, OrderButton } from "./Button";
-import { Check } from "./Icons";
+import { orderProvider, telUrl } from "@/lib/order";
+import { ArrowRight } from "./Icons";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
 };
 const item: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } },
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 1, ease } },
 };
 
-/** Home hero. Page-load orchestration is Framer Motion; scroll motion lives in GSAP. */
+/**
+ * Home hero: a big regular-weight statement, then a quiet two-column row.
+ * On desktop an "Explore" circle follows the cursor; clicking empty hero space
+ * goes to /services (the links inside keep their own behaviour).
+ */
 export function Hero() {
-  return (
-    <section className="relative overflow-hidden pb-16 pt-6 md:pb-28 md:pt-14">
-      <div className="mx-auto grid max-w-6xl gap-14 px-5 sm:px-8 lg:grid-cols-12 lg:items-center">
-        <motion.div variants={container} initial="hidden" animate="show" className="lg:col-span-7">
-          <motion.p variants={item} className="eyebrow mb-6">
-            Professional &amp; academic writing · Tanzania
-          </motion.p>
-          <motion.h1 variants={item} className="display">
-            Words that get you <span className="text-brand">accepted, funded</span> and hired.
-          </motion.h1>
-          <motion.p variants={item} className="lead mt-7">
-            Research papers, CVs, proposals and business plans, written by experienced Tanzanian writers. Message us,
-            get a fixed quote within the hour, and pay with mobile money.
-          </motion.p>
-          <motion.div variants={item} className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <OrderButton size="lg" label="Order on WhatsApp" />
-            <ButtonLink href="/services" size="lg" variant="secondary" arrow>
-              See our services
-            </ButtonLink>
-          </motion.div>
-          <motion.ul variants={item} className="mt-9 flex flex-col gap-2.5 text-[0.95rem] text-muted sm:flex-row sm:flex-wrap sm:gap-x-6">
-            {["Reply within 1 hour", `Pay by ${siteConfig.payments.methods[0]} or Tigo Pesa`, "2 free revisions"].map((t) => (
-              <li key={t} className="flex items-center gap-2">
-                <Check width={18} height={18} className="text-brand" /> {t}
-              </li>
-            ))}
-          </motion.ul>
-        </motion.div>
+  const router = useRouter();
+  const areaRef = useRef<HTMLElement>(null);
 
-        <HeroVisual />
-      </div>
+  const onClick = (e: MouseEvent) => {
+    if ((e.target as HTMLElement).closest("a, button")) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    router.push("/services");
+  };
+
+  return (
+    <section ref={areaRef} onClick={onClick} className="relative overflow-hidden pb-20 pt-16 md:pb-32 md:pt-28">
+      <ExploreCursor areaRef={areaRef} />
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="mx-auto max-w-6xl px-5 sm:px-8"
+      >
+        <motion.h1 variants={item} className="display max-w-[16ch] text-[clamp(2.75rem,1.2rem+5.6vw,5.75rem)]">
+          Clear writing. Fixed quotes. On time, every time.
+        </motion.h1>
+
+        <div className="mt-16 grid gap-8 md:mt-24 md:grid-cols-12">
+          <motion.p variants={item} className="md:col-span-3">
+            Listen. Draft.
+            <br />
+            Revise. Deliver.
+          </motion.p>
+          <motion.div variants={item} className="md:col-span-8 md:col-start-5">
+            <p className="max-w-[62ch] text-lg leading-relaxed">
+              At {siteConfig.name}, we write research papers, CVs, proposals and business plans with you at the
+              centre. Every project starts with a quick call: we listen, give you a fixed quote, and keep you in the
+              loop until the final file lands. Pay with {siteConfig.payments.methods.join(", ")}.
+            </p>
+            <div className="mt-10 flex flex-wrap gap-x-10 gap-y-5">
+              <ArrowLink href={telUrl()}>Call us</ArrowLink>
+              <ArrowLink href={orderProvider.getOrderUrl({})} external>
+                WhatsApp us
+              </ArrowLink>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
     </section>
   );
 }
 
-/**
- * Signature moment: a stack of "documents" where the front page writes itself in.
- * Transform + opacity only.
- */
-function HeroVisual() {
-  const lines = [
-    { w: "92%", strong: true },
-    { w: "64%", strong: true },
-    { w: "100%" },
-    { w: "96%" },
-    { w: "100%" },
-    { w: "58%" },
-  ];
+/** Underlined text link with a round grey arrow chip (LPAS "More about us" style). */
+function ArrowLink({ href, external, children }: { href: string; external?: boolean; children: ReactNode }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1.1, ease, delay: 0.35 }}
-      className="relative mx-auto w-full max-w-md lg:col-span-5"
-      aria-hidden
+    <a
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className="group inline-flex items-center gap-3 text-lg"
     >
-      {/* back pages */}
-      <div className="absolute inset-0 translate-x-4 translate-y-3 rotate-[5deg] rounded-2xl border border-line bg-brand-soft" />
-      <div className="absolute inset-0 -translate-x-3 translate-y-2 -rotate-[4deg] rounded-2xl border border-line bg-surface" />
+      <span className="border-b border-ink pb-1">{children}</span>
+      <span className="grid size-9 place-items-center rounded-full bg-line transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">
+        <ArrowRight width={16} height={16} />
+      </span>
+      {external && <span className="sr-only"> (opens in a new tab)</span>}
+    </a>
+  );
+}
 
-      {/* front page */}
-      <div className="relative rounded-2xl border border-line bg-surface p-7 shadow-[0_30px_60px_-30px_rgba(18,32,29,.35)] sm:p-9">
-        <div className="mb-7 flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-full bg-brand text-sm font-bold text-brand-contrast">N</span>
-          <div className="space-y-1.5">
-            <span className="block h-2.5 w-28 rounded-full bg-ink/80" />
-            <span className="block h-2 w-20 rounded-full bg-ink/15" />
-          </div>
-        </div>
-        <div className="space-y-3.5">
-          {lines.map((l, i) => (
-            <motion.span
-              key={i}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, ease, delay: 0.9 + i * 0.12 }}
-              style={{ width: l.w, transformOrigin: "left" }}
-              className={`block h-2.5 rounded-full ${l.strong ? "bg-ink/80" : "bg-ink/15"}`}
-            />
-          ))}
-        </div>
-        <div className="mt-7 grid grid-cols-3 gap-3">
-          {[0, 1, 2].map((i) => (
-            <motion.span
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease, delay: 1.7 + i * 0.1 }}
-              className="h-14 rounded-xl bg-brand-soft"
-            />
-          ))}
-        </div>
-      </div>
+/**
+ * Translucent "Explore" circle that trails the cursor inside the hero.
+ * Fine pointers only, off for reduced motion, shrinks away over links.
+ * Transform + opacity only, driven by gsap.quickTo.
+ */
+function ExploreCursor({ areaRef }: { areaRef: RefObject<HTMLElement | null> }) {
+  const circleRef = useRef<HTMLDivElement>(null);
 
-      {/* floating chips */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.7, ease, delay: 2 }}
-        className="absolute -right-2 -top-4 flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-brand-contrast shadow-lg sm:-right-6"
-      >
-        <Check width={16} height={16} /> Delivered on time
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.7, ease, delay: 2.15 }}
-        className="absolute -bottom-5 -left-2 rounded-2xl border border-line bg-surface px-4 py-3 shadow-lg sm:-left-6"
-      >
-        <p className="text-xs text-muted">Typical CV turnaround</p>
-        <p className="text-lg font-extrabold tracking-tight">24–48 hours</p>
-      </motion.div>
-    </motion.div>
+  useLayoutEffect(() => {
+    const area = areaRef.current;
+    const circle = circleRef.current;
+    if (!area || !circle) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    gsap.set(circle, { xPercent: -50, yPercent: -50, scale: 0, opacity: 0 });
+    const xTo = gsap.quickTo(circle, "x", { duration: 0.6, ease: "power3" });
+    const yTo = gsap.quickTo(circle, "y", { duration: 0.6, ease: "power3" });
+    let shown = false;
+
+    const show = (on: boolean) => {
+      if (on === shown) return;
+      shown = on;
+      gsap.to(circle, { scale: on ? 1 : 0, opacity: on ? 1 : 0, duration: 0.4, ease: "power3.out", overwrite: "auto" });
+    };
+    const onMove = (e: PointerEvent) => {
+      const r = area.getBoundingClientRect();
+      xTo(e.clientX - r.left);
+      yTo(e.clientY - r.top);
+      show(!(e.target as HTMLElement).closest("a, button"));
+    };
+    const onLeave = () => show(false);
+
+    area.addEventListener("pointermove", onMove);
+    area.addEventListener("pointerleave", onLeave);
+    return () => {
+      area.removeEventListener("pointermove", onMove);
+      area.removeEventListener("pointerleave", onLeave);
+      gsap.killTweensOf(circle);
+    };
+  }, [areaRef]);
+
+  return (
+    <div
+      ref={circleRef}
+      aria-hidden
+      className="pointer-events-none absolute left-0 top-0 z-10 grid size-36 place-items-center rounded-full bg-ink/45 text-lg text-white opacity-0 backdrop-blur-sm"
+    >
+      Explore
+    </div>
   );
 }
