@@ -21,7 +21,7 @@ export function FooterNav({
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-lg">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-base md:gap-x-8 md:text-lg">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -50,7 +50,7 @@ export function FooterNav({
         }`}
       >
         <div className="overflow-hidden" inert={!open}>
-          <ul className="nav-group flex flex-col gap-1 pt-8">
+          <ul className="nav-group flex flex-col gap-1 pt-6 md:pt-8">
             {services.map((s) => (
               <li key={s.href}>
                 <Link

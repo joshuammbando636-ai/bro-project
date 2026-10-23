@@ -15,7 +15,8 @@ const ring = "rounded-md outline-none focus-visible:ring-2 focus-visible:ring-wh
 
 /** Lines → X: the bars meet in the middle first, then rotate (and the reverse). */
 const MORPH: Transition = { duration: 0.55, times: [0, 0.45, 1], ease: [0.65, 0, 0.35, 1] };
-const WORD: Transition = { duration: 0.45, ease: [0.16, 1, 0.3, 1] };
+/** Menu ⇄ Close rolls vertically: the old word rolls up and out as the new one rolls in from below. */
+const WORD: Transition = { duration: 0.75, ease: [0.76, 0, 0.24, 1] };
 const OPEN_CLIP = "inset(0px 0px 0px 0px round 0px)";
 
 /**
@@ -132,9 +133,9 @@ export function Nav() {
           <AnimatePresence initial={false} mode="popLayout">
             <motion.span
               key={isOpen ? "close" : "menu"}
-              initial={{ y: "100%", opacity: 0, filter: "blur(3px)" }}
+              initial={{ y: "110%", opacity: 0.4, filter: "blur(1.5px)" }}
               animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
-              exit={{ y: "-100%", opacity: 0, filter: "blur(3px)" }}
+              exit={{ y: "-110%", opacity: 0.4, filter: "blur(1.5px)" }}
               transition={WORD}
             >
               {isOpen ? "Close" : "Menu"}
@@ -167,22 +168,22 @@ export function Nav() {
       >
         <div
           ref={panelRef}
-          className="on-dark no-scrollbar absolute inset-0 overflow-y-auto overscroll-contain bg-[rgb(30_30_30/0.6)] text-white backdrop-blur-[40px] backdrop-saturate-150"
+          className="on-dark no-scrollbar absolute inset-0 overflow-y-auto overscroll-contain bg-[#1e1e1e] text-white md:bg-[rgb(30_30_30/0.6)] md:backdrop-blur-[40px] md:backdrop-saturate-150"
         >
           <div className="mx-auto flex min-h-full max-w-6xl flex-col px-5 pb-10 sm:px-8">
             <div className="nav-item flex h-20 items-center">
               <Logo inverted className={ring} />
             </div>
-            <div className="nav-item mt-8 border-t border-white/15" />
+            <div className="nav-item mt-4 border-t border-white/15 md:mt-8" />
 
-            <nav aria-label="Main navigation" className="mt-8 grid flex-1 gap-12 lg:grid-cols-12">
+            <nav aria-label="Main navigation" className="mt-8 grid flex-1 gap-10 md:gap-12 lg:grid-cols-12">
               <div className="nav-item lg:col-span-7">
                 <p className={label}>Our services</p>
                 <ul className="nav-group mt-4">
                   {siteConfig.services.map((s) => (
                     <li key={s.slug}>
                       <Link
-                        href={`/services#${s.slug}`}
+                        href={`/services/${s.slug}`}
                         onClick={close}
                         className={`inline-block py-1 text-[clamp(2.25rem,4.2vw,3.75rem)] leading-[1.12] tracking-[-0.03em] ${ring}`}
                       >
@@ -211,7 +212,7 @@ export function Nav() {
                     ))}
                   </ul>
                 </div>
-                <div className="nav-item">
+                <div className="nav-item hidden md:block">
                   <p className={label}>Good to know</p>
                   <ul className="nav-group mt-4">
                     {[
@@ -233,10 +234,10 @@ export function Nav() {
               </div>
             </nav>
 
-            <div className="mt-16 grid gap-10 lg:grid-cols-12 lg:items-end">
+            <div className="mt-12 grid gap-10 md:mt-16 lg:grid-cols-12 lg:items-end">
               <SocialLinks variant="icon" className="nav-item lg:col-span-7" />
 
-              <div className="nav-item lg:col-span-4 lg:col-start-9">
+              <div className="nav-item hidden md:block lg:col-span-4 lg:col-start-9">
                 <p className="text-lg font-medium">{contact.location.city}</p>
                 <p className="mt-3 text-white/80">{contact.location.country}</p>
                 <p className="mt-3">

@@ -66,10 +66,11 @@ export const siteConfig = {
     note: "We confirm your quote on WhatsApp, then you pay a deposit by mobile money. No card needed.",
   },
 
-  /** Phase 2 (deferred): Blog / News and Shop. Left out of nav on purpose. */
+  /** Phase 2 (deferred): Shop. Left out of nav on purpose. */
   nav: [
     { label: "Home", href: "/" },
     { label: "Services", href: "/services" },
+    { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
   ],
 

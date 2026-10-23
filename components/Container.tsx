@@ -26,8 +26,8 @@ export function SectionHeading({
         <h2 className="h2">{title}</h2>
       </div>
       {(intro || action) && (
-        <div className="flex flex-col items-start gap-5 md:col-span-5">
-          {intro && <p className="lead">{intro}</p>}
+        <div className={`flex-col items-start gap-5 md:col-span-5 ${action ? "flex" : "hidden md:flex"}`}>
+          {intro && <p className="lead max-md:hidden">{intro}</p>}
           {action}
         </div>
       )}

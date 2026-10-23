@@ -50,6 +50,7 @@
 html {
   background: var(--paper);
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 body {
   background: var(--paper);
@@ -121,8 +122,10 @@ body {
     text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
     transition: text-decoration-color 0.2s ease;
   }
-  .link:hover {
-    text-decoration-color: currentColor;
+  @media (hover: hover) {
+    .link:hover {
+      text-decoration-color: currentColor;
+    }
   }
 }
 
@@ -143,6 +146,109 @@ body {
   .nav-group:has(a:hover) a:not(:hover) {
     filter: blur(4px);
     opacity: 0.5;
+  }
+}
+
+/* ---------- Arrow pill (components/ArrowPill.tsx) ----------
+   A circle that, while the pointer is on it, stretches into a bouncy rounded
+   rectangle, slowly fills from the side the cursor came in (data-from, set in
+   Providers) and sends the arrow out to the right and back in from the left.
+   Only the pill itself reacts to hover; its .arrow-host link shows it on
+   keyboard focus. */
+.arrow-pill {
+  --pill-h: 2.25rem;
+  --pill-bg: var(--line);
+  --pill-fg: var(--ink);
+  --pill-fill: var(--ink);
+  --pill-fg-on: var(--paper);
+  --pill-bounce: cubic-bezier(0.34, 1.8, 0.5, 1);
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--pill-h);
+  height: var(--pill-h);
+  overflow: hidden;
+  border-radius: calc(var(--pill-h) / 2);
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  transition:
+    width 0.65s var(--pill-bounce),
+    border-radius 0.65s var(--pill-bounce),
+    color 0.3s ease;
+}
+.arrow-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--pill-fill);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.75s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.arrow-pill[data-from="right"]::before {
+  transform-origin: right;
+}
+.arrow-pill--glass {
+  --pill-bg: rgb(255 255 255 / 0.15);
+  --pill-fg: #fff;
+  --pill-fill: #fff;
+  --pill-fg-on: var(--ink);
+}
+.arrow-pill--outline {
+  --pill-bg: transparent;
+  --pill-fg: #fff;
+  --pill-fill: #fff;
+  --pill-fg-on: var(--ink);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.7);
+}
+@media (hover: hover) and (pointer: fine) {
+  .arrow-pill:hover {
+    width: calc(var(--pill-h) * 1.7);
+    border-radius: calc(var(--pill-h) * 0.3);
+    color: var(--pill-fg-on);
+  }
+  .arrow-pill:hover::before {
+    transform: scaleX(1);
+  }
+  .arrow-pill:hover svg {
+    animation: arrow-fly 0.8s both;
+  }
+}
+.arrow-host:focus-visible .arrow-pill {
+  color: var(--pill-fg-on);
+}
+.arrow-host:focus-visible .arrow-pill::before {
+  transform: scaleX(1);
+}
+/* Touch screens have no hover: a tap gives a quick fill instead of the slow stretch */
+@media (hover: none) {
+  .arrow-host:active .arrow-pill,
+  .arrow-pill:active {
+    color: var(--pill-fg-on);
+  }
+  .arrow-host:active .arrow-pill::before,
+  .arrow-pill:active::before {
+    transform: scaleX(1);
+    transition-duration: 0.12s;
+  }
+}
+@keyframes arrow-fly {
+  0% {
+    transform: translateX(0);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  45% {
+    transform: translateX(var(--pill-h));
+  }
+  45.01% {
+    transform: translateX(calc(var(--pill-h) * -1));
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
 

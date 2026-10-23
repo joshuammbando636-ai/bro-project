@@ -2,13 +2,14 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { siteConfig } from "@/config/site";
 import { getLenis } from "@/lib/lenis";
-import { orderProvider } from "@/lib/order";
-import { ArrowRight, Check } from "./Icons";
+import { ArrowPill } from "./ArrowPill";
+import { Check } from "./Icons";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -202,12 +203,10 @@ export function ServicesShowcase() {
             <button
               type="button"
               onClick={() => scrollToCard(0)}
-              className="group col-span-2 inline-flex items-center gap-3 justify-self-start rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white md:col-span-5 md:justify-self-end"
+              className="arrow-host col-span-2 inline-flex items-center gap-3 justify-self-start rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white md:col-span-5 md:justify-self-end"
             >
               Scroll to explore
-              <span className="grid size-9 place-items-center rounded-full border border-white/70 transition-transform duration-300 group-hover:translate-x-1">
-                <ArrowRight width={16} height={16} />
-              </span>
+              <ArrowPill tone="outline" />
             </button>
           </div>
 
@@ -242,7 +241,7 @@ export function ServicesShowcase() {
 
             <div className="absolute inset-x-0 bottom-0 flex h-[44%] flex-col justify-end gap-4 p-6 sm:p-8 lg:p-10">
               <p className="svc-line text-sm text-white/55">
-                {String(i + 1).padStart(2, "0")} / {String(siteConfig.services.length).padStart(2, "0")} · {s.turnaround}
+                {String(i + 1).padStart(2, "0")} / {String(siteConfig.services.length).padStart(2, "0")}
               </p>
               <h2 className="svc-line text-[clamp(2rem,3.4vw,3.5rem)] leading-none tracking-[-0.035em]">{s.title}</h2>
               <ul className="svc-line hidden gap-x-6 gap-y-1.5 text-[0.95rem] text-white/80 sm:grid sm:grid-cols-2">
@@ -254,18 +253,14 @@ export function ServicesShowcase() {
                 ))}
               </ul>
               <p className="svc-line text-[0.95rem] text-white/80 sm:hidden">{s.short}</p>
-              <a
-                href={orderProvider.getOrderUrl({ service: s.slug })}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="svc-line group inline-flex items-center gap-3 self-start rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-white"
+              <Link
+                href={`/services/${s.slug}`}
+                className="svc-line arrow-host inline-flex items-center gap-3 self-start rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
-                <span className="border-b border-white pb-1">Order on WhatsApp</span>
-                <span className="grid size-8 place-items-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-1">
-                  <ArrowRight width={14} height={14} />
-                </span>
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
+                <span className="border-b border-white pb-1">Learn more</span>
+                <ArrowPill size={32} tone="glass" />
+                <span className="sr-only"> about {s.title.toLowerCase()}</span>
+              </Link>
             </div>
           </article>
         ))}

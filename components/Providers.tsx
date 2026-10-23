@@ -75,6 +75,37 @@ function SmoothScroll() {
   return null;
 }
 
+/**
+ * Arrow pills fill from the side the cursor enters (and drain toward the side
+ * it leaves): record which half of the pill the pointer crossed. One delegated
+ * listener for the whole site; see .arrow-pill in globals.css.
+ */
+function ArrowPillDirection() {
+  useEffect(() => {
+    // Touch screens: no hover fill to steer. An empty touch listener lets iOS
+    // Safari apply :active, which drives the tap fill instead.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      const noop = () => {};
+      document.addEventListener("touchstart", noop, { passive: true });
+      return () => document.removeEventListener("touchstart", noop);
+    }
+    const onCross = (e: PointerEvent) => {
+      const pill = (e.target as Element).closest?.<HTMLElement>(".arrow-pill");
+      if (!pill || (e.relatedTarget instanceof Node && pill.contains(e.relatedTarget))) return;
+      const r = pill.getBoundingClientRect();
+      pill.dataset.from = e.clientX > r.left + r.width / 2 ? "right" : "left";
+    };
+    document.addEventListener("pointerover", onCross);
+    document.addEventListener("pointerout", onCross);
+    return () => {
+      document.removeEventListener("pointerover", onCross);
+      document.removeEventListener("pointerout", onCross);
+    };
+  }, []);
+
+  return null;
+}
+
 /** Element for a #hash, unless it lives in a section that handles its own anchors (data-own-anchors). */
 function hashTarget(hash: string) {
   if (hash.length < 2) return null;
@@ -86,6 +117,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <MotionConfig reducedMotion="user">
       <SmoothScroll />
+      <ArrowPillDirection />
       {children}
     </MotionConfig>
   );

@@ -33,7 +33,7 @@ export function ProcessSteps() {
   }, []);
 
   return (
-    <ol ref={list} className="relative space-y-12 pl-16 sm:pl-20">
+    <ol ref={list} className="relative space-y-8 pl-16 sm:pl-20 md:space-y-12">
       <span aria-hidden className="absolute bottom-3 left-[1.375rem] top-3 w-0.5 bg-line sm:left-[1.625rem]" />
       <span
         ref={fill}
@@ -47,7 +47,7 @@ export function ProcessSteps() {
           </span>
           <Reveal>
             <h3 className="h3 pt-2.5">{step.title}</h3>
-            <p className="mt-2 max-w-[55ch] text-muted">{step.body}</p>
+            <p className="mt-2 hidden max-w-[55ch] text-muted md:block">{step.body}</p>
           </Reveal>
         </li>
       ))}

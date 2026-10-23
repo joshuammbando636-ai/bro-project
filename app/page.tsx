@@ -3,7 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Hero } from "@/components/Hero";
 import { Container } from "@/components/Container";
-import { ArrowRight } from "@/components/Icons";
+import { ArrowPill } from "@/components/ArrowPill";
 import { Reveal } from "@/components/Reveal";
 import { ServiceFeatureCard, ServiceTextCard } from "@/components/ServiceCard";
 import { ProcessSteps } from "@/components/ProcessSteps";
@@ -22,17 +22,15 @@ export default function HomePage() {
         <Container>
           <Reveal>
             <h2 className="h2" id="what-we-do">What we do</h2>
-            <div className="mt-10 flex flex-col gap-6 border-b border-line pb-6 lg:flex-row lg:items-center lg:justify-between">
-              <Link href="/services" className="group inline-flex items-center gap-3 text-lg">
+            <div className="mt-8 flex flex-col gap-6 border-b border-line pb-6 md:mt-10 lg:flex-row lg:items-center lg:justify-between">
+              <Link href="/services" className="arrow-host inline-flex items-center gap-3 text-lg">
                 All services
-                <span className="grid size-9 place-items-center rounded-full bg-line transition-transform duration-300 group-hover:translate-x-1">
-                  <ArrowRight width={16} height={16} />
-                </span>
+                <ArrowPill />
               </Link>
-              <ul className="flex flex-wrap gap-x-8 gap-y-2 text-lg text-muted">
+              <ul className="hidden flex-wrap gap-x-8 gap-y-2 text-lg text-muted md:flex">
                 {siteConfig.services.map((s) => (
                   <li key={s.slug}>
-                    <Link href={`/services#${s.slug}`} className="transition-colors hover:text-ink">
+                    <Link href={`/services/${s.slug}`} className="transition-colors hover:text-ink">
                       {s.title}
                     </Link>
                   </li>
@@ -44,7 +42,7 @@ export default function HomePage() {
             <Reveal>
               <ServiceFeatureCard service={siteConfig.services[0]} />
             </Reveal>
-            <Reveal stagger className="grid gap-5 sm:grid-cols-3">
+            <Reveal stagger className="grid gap-3 sm:grid-cols-3 sm:gap-5">
               {siteConfig.services.slice(1).map((s) => (
                 <ServiceTextCard key={s.slug} service={s} />
               ))}
@@ -59,7 +57,9 @@ export default function HomePage() {
           <Reveal className="lg:col-span-4">
             <p className="eyebrow mb-4">How it works</p>
             <h2 className="h2" id="process">From first call to final file.</h2>
-            <p className="lead mt-5">Five clear steps. You always know the price and the date before we start.</p>
+            <p className="lead mt-5 hidden md:block">
+              Five clear steps. You always know the price and the date before we start.
+            </p>
           </Reveal>
           <div className="lg:col-span-7 lg:col-start-6">
             <ProcessSteps />
@@ -78,7 +78,7 @@ export default function HomePage() {
           <Reveal className="lg:col-span-4">
             <p className="eyebrow mb-4">Questions</p>
             <h2 className="h2" id="faq-title">Good to know before you call.</h2>
-            <p className="lead mt-5">Can&apos;t find your answer? Call us and ask.</p>
+            <p className="lead mt-5 hidden md:block">Can&apos;t find your answer? Call us and ask.</p>
           </Reveal>
           <Reveal className="lg:col-span-8">
             <Accordion items={siteConfig.faqs} />
